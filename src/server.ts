@@ -2,8 +2,11 @@ import fastify from 'fastify'
 
 const app = fastify()
 
-app.get('/', ()=>{
-    return 'Rota principal'
+app.post('/events', async (request, reply) => {
+    const data = request.body
+
+     return {message: 'Dados recebidos!', receivedData: data};
+
 })
 
 app.get('/teste', ()=>{
