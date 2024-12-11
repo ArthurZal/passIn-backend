@@ -10,7 +10,8 @@ app.post('/events', async (request, reply) => {
         details: z.string().nullable(),
         maximumAttendees: z.number().int().positive().nullable()
     })
-    const data = request.body
+
+    const data =  createSchema.parse(request.body)
 
      return {message: 'Dados recebidos!', receivedData: data};
 
