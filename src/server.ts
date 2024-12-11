@@ -1,8 +1,13 @@
 import fastify from 'fastify'
-import { title } from 'process'
 import { z } from 'zod'
+import { PrismaClient } from '@prisma/client';
+
 
 const app = fastify()
+
+const prisma = new PrismaClient({
+    log: ['query']
+})
 
 app.post('/events', async (request, reply) => {
     const createSchema = z.object({
@@ -13,7 +18,17 @@ app.post('/events', async (request, reply) => {
 
     const data =  createSchema.parse(request.body)
 
-     return {message: 'Dados recebidos!', receivedData: data};
+    const event = await prisma.event.create({
+        data: {
+            title: data.title,
+            details: data.details,
+            maximumAttendees: data.maximumAttendees,
+            slug: new Date().toISOString(),
+        }
+    })
+
+    return { eventId: event.id }
+
 
 })
 
