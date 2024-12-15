@@ -27,7 +27,7 @@ app.post('/events', async (request, reply) => {
         }
     })
 
-    return { eventId: event.id }
+    return reply.status(201).send({ eventId: event.id })
 
 
 })
