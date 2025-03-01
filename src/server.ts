@@ -18,7 +18,18 @@ app.post('/events', async (request, reply) => {
     })
 
     const data =  createSchema.parse(request.body)
+
     const slug = generateSlug(data.title)
+
+    const eventWithSameSlug =  await prisma.event.findUnique({
+        where: {
+           slug, 
+        }
+    })
+
+    if (eventWithSameSlug !== null) {
+        throw new Error('Another event with same title already exists')
+    }
 
     const event = await prisma.event.create({
         data: {
@@ -31,9 +42,7 @@ app.post('/events', async (request, reply) => {
 
     return reply.status(201).send({ eventId: event.id })
 
-
 })
-
 
 app.listen({ port: 3333 }).then(()=> {
     console.log('server running: http://localhost:3333')
